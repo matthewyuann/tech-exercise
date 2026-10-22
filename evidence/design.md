@@ -1,0 +1,151 @@
+# Design
+
+## Architecture Overview
+
+A single-purpose CLI script that reads from a local SQLite database, executes parameterised
+SQL queries, and writes a structured case summary to stdout.
+
+The database is seeded from CSV files at setup time. Two environments are provided —
+`prod` (unmasked fictional data) and `non_prod` (PII masked) — controlled by a `.env` file.
+In production, the SQLite file is replaced by a governed database; the queries and application
+code are unchanged.
+
+```
+CSV seed files  →  setup.py  →  prod.db / non_prod.db
+                                       ↓
+                             .env (DB_ENV=non_prod)
+                                       ↓
+                    main.py --party-id P001
+                         ↓
+                    config.py  →  resolves environment
+                    db.py      →  opens SQLite connection
+                    loader.py  →  executes 4 SQL queries
+                    formatter.py →  builds case summary
+                         ↓
+                      stdout
+```
+
+---
+
+## Data Flow
+
+1. Investigator runs `python main.py --party-id <id> [--from-date YYYY-MM-DD] [--to-date YYYY-MM-DD]`
+2. `config.py` reads `.env`, resolves which database to connect to
+3. `db.py` opens a connection to `data/prod.db` or `data/non_prod.db`
+4. `loader.py` executes 4 parameterised queries in sequence:
+   - `get_party.sql` — party profile and account list
+   - `get_accounts.sql` — account details for the party
+   - `get_transactions.sql` — transactions filtered by account and date range
+   - `get_alerts.sql` — open and historical alerts for the party
+5. Each query result is logged (row count only, no PII)
+6. `formatter.py` assembles the results into a plain-text case summary
+7. Summary is written to stdout; investigator copies into their case notes
+
+---
+
+## Component Boundaries
+
+```
+main.py           CLI entry point — argument parsing, orchestration
+config.py         Loads .env, exposes DB path and environment name
+db.py             SQLite connection, parameterised query execution, row count logging
+queries/
+  get_party.sql
+  get_accounts.sql
+  get_transactions.sql
+  get_alerts.sql
+loader.py         Calls db.py for each query, returns structured dicts
+formatter.py      Renders the case summary as plain text for stdout
+logger.py         Structured logging — record IDs and counts only, never PII
+setup.py          Seeds prod.db and non_prod.db from data/prod/ and data/non_prod/ CSVs
+data/
+  prod/           Unmasked fictional CSV source files
+  non_prod/       PII-masked CSV source files
+  prod.db         Generated at setup — gitignored
+  non_prod.db     Generated at setup — gitignored
+tests/            pytest — tool functions, output schema, abstain paths, golden output
+evidence/         Design documentation
+```
+
+---
+
+## Key Trade-offs
+
+**SQLite over direct CSV reading**
+Using SQLite as a mock database means queries are SQL — the same language used against
+production databases. The trade-off is an extra setup step (`python setup.py`). This was
+chosen because it more accurately represents the production integration pattern and makes
+the path to a real database explicit: change the connection string, not the queries.
+
+**Two CSV sets instead of a masking script**
+Maintaining separate `prod/` and `non_prod/` CSV folders avoids writing and testing a
+masking function. The trade-off is duplicated data that must be kept in sync manually.
+For this scope, the simplicity benefit outweighs the maintenance risk.
+
+**stdout over a file output**
+Output goes to stdout so investigators can copy directly into case notes without managing
+output files. A `--output` flag to redirect to a `.txt` file is a natural next step but
+was out of scope for this timebox.
+
+**No LLM in the product**
+The script is fully deterministic — no language model is used. This keeps the solution
+credential-free, auditable and reproducible: the same input always produces the same output.
+LLM-generated narrative summarisation is documented as a future stage.
+
+**requirements.txt over uv**
+`pip` and `requirements.txt` ship with Python and require no additional tooling from the
+reviewer. uv would be the preferred local development toolchain but adds friction for
+external setup.
+
+---
+
+## Security and Privacy
+
+- **Environment separation** — `non_prod` is the default. Unmasked data requires an explicit
+  `DB_ENV=prod` in `.env`. This mirrors the production pattern where production data access
+  is constrained and audited.
+- **No PII in logs** — log entries contain record IDs and row counts only. No names, dates
+  of birth, addresses or account numbers are written to any log file.
+- **Read-only access** — the script never writes to the database. All queries are `SELECT`.
+- **Parameterised queries** — all SQL is parameterised. No user input is interpolated into
+  query strings, preventing SQL injection.
+- **No credentials in code** — database path and environment are resolved from `.env`,
+  which is gitignored and never committed.
+
+---
+
+## Technology Choices
+
+| Component | Choice | Reason |
+|---|---|---|
+| Language | Python 3.11+ | Standard for data and scripting; assessors can run without additional tooling |
+| Database | SQLite | Zero-dependency, file-based, full SQL support; swappable for any SQL database |
+| SQL | `.sql` files | Readable, testable independently, mirrors how queries are managed in production |
+| Config | python-dotenv | Standard `.env` pattern; maps directly to how secrets are injected in CI/CD |
+| Logging | Python stdlib `logging` | No extra dependency; structured enough for future log aggregation |
+| Testing | pytest | Standard; integrates with GitHub Actions without configuration |
+| Linting | ruff | Fast, zero-config, catches common issues |
+
+---
+
+## Production and Cloud Shape
+
+**Local (current)**
+- SQLite file-based databases seeded from CSV files
+- `.env` file controls environment selection
+- All credentials are illustrative (no real credentials exist)
+
+**Production path**
+- SQLite replaced by a governed database (PostgreSQL, SQL Server, or cloud-managed equivalent)
+- `.env` replaced by a secrets manager (AWS Secrets Manager, Azure Key Vault, GCP Secret Manager)
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` injected at runtime by the pipeline
+- `db.py` connection driver swapped (`sqlite3` → `psycopg2` / `pyodbc`) — queries unchanged
+- Script packaged as a container image; run as a task or job, not a long-running service
+- Access to production data gated by IAM roles and network controls, not application-level logic
+
+**CI/CD promotion**
+- Pull request triggers GitHub Actions: `ruff` lint → `pytest` → golden output test
+- Merge to `main` builds and pushes a versioned container image
+- Environment promotion (`non_prod` → `prod`) is a configuration change, not a code change
+- No deployment to cloud is required for this exercise — the container and pipeline shape
+  is described here as the intended next step
