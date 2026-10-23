@@ -19,7 +19,7 @@ logging.basicConfig(
 logger = logging.getLogger("setup")
 
 DATA_DIR = Path(__file__).parent / "data"
-ENVIRONMENTS = ["prod", "non_prod"]
+ENVIRONMENTS = ["unmasked", "masked"]
 TABLES = ["party_data", "account_data", "transaction_data", "alert_data"]
 
 # SQLite-equivalent schema (production target is Cloud Spanner — see schema.sql)
@@ -137,7 +137,7 @@ def setup_environment(env: str) -> None:
 def main() -> None:
     for env in ENVIRONMENTS:
         setup_environment(env)
-    logger.info("Setup complete — run: python main.py --party-id <id>")
+    logger.info("Setup complete — run: python main.py --party-id <id> [--env masked|unmasked]")
 
 
 if __name__ == "__main__":

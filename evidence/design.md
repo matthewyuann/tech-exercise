@@ -6,14 +6,14 @@ A single-purpose CLI script that reads from a local SQLite database, executes pa
 SQL queries, and writes a structured case summary to stdout.
 
 The database is seeded from CSV files at setup time. Two environments are provided —
-`prod` (unmasked fictional data) and `non_prod` (PII masked) — controlled by a `.env` file.
+`unmasked` (clearly fictional full data) and `masked` (PII replaced) — controlled by a `.env` file.
 In production, the SQLite file is replaced by a governed database; the queries and application
 code are unchanged.
 
 ```
-CSV seed files  →  setup.py  →  prod.db / non_prod.db
+CSV seed files  →  setup.py  →  unmasked.db / masked.db
                                        ↓
-                             .env (DB_ENV=non_prod)
+                             .env (DB_ENV=masked)
                                        ↓
                     main.py --party-id P001
                          ↓
@@ -31,7 +31,7 @@ CSV seed files  →  setup.py  →  prod.db / non_prod.db
 
 1. Investigator runs `python main.py --party-id <id> [--from-date YYYY-MM-DD] [--to-date YYYY-MM-DD]`
 2. `config.py` reads `.env`, resolves which database to connect to
-3. `db.py` opens a connection to `data/prod.db` or `data/non_prod.db`
+3. `db.py` opens a connection to `data/unmasked.db` or `data/masked.db`
 4. `loader.py` executes 4 parameterised queries in sequence:
    - `get_party.sql` — party profile and account list
    - `get_accounts.sql` — account details for the party
@@ -57,12 +57,12 @@ queries/
 loader.py         Calls db.py for each query, returns structured dicts
 formatter.py      Renders the case summary as plain text for stdout
 logger.py         Structured logging — record IDs and counts only, never PII
-setup.py          Seeds prod.db and non_prod.db from data/prod/ and data/non_prod/ CSVs
+setup.py          Seeds unmasked.db and masked.db from data/unmasked/ and data/masked/ CSVs
 data/
-  prod/           Unmasked fictional CSV source files
-  non_prod/       PII-masked CSV source files
-  prod.db         Generated at setup — gitignored
-  non_prod.db     Generated at setup — gitignored
+  unmasked/       Clearly fictional CSV source files, all fields populated
+  masked/         Same data with PII fields replaced
+  unmasked.db     Generated at setup — gitignored
+  masked.db       Generated at setup — gitignored
 tests/            pytest — tool functions, output schema, abstain paths, golden output
 evidence/         Design documentation
 ```
@@ -78,7 +78,7 @@ chosen because it more accurately represents the production integration pattern 
 the path to a real database explicit: change the connection string, not the queries.
 
 **Two CSV sets instead of a masking script**
-Maintaining separate `prod/` and `non_prod/` CSV folders avoids writing and testing a
+Maintaining separate `unmasked/` and `masked/` CSV folders avoids writing and testing a
 masking function. The trade-off is duplicated data that must be kept in sync manually.
 For this scope, the simplicity benefit outweighs the maintenance risk.
 
@@ -101,8 +101,8 @@ external setup.
 
 ## Security and Privacy
 
-- **Environment separation** — `non_prod` is the default. Unmasked data requires an explicit
-  `DB_ENV=prod` in `.env`. This mirrors the production pattern where production data access
+- **Environment separation** — `masked` is the default. Unmasked data requires an explicit
+  `DB_ENV=unmasked` in `.env`. This mirrors the production pattern where full-detail data access
   is constrained and audited.
 - **No PII in logs** — log entries contain record IDs and row counts only. No names, dates
   of birth, addresses or account numbers are written to any log file.
@@ -206,6 +206,6 @@ CREATE TABLE alert_data (
 **CI/CD promotion**
 - Pull request triggers GitHub Actions: `ruff` lint → `pytest` → golden output test
 - Merge to `main` builds and pushes a versioned container image
-- Environment promotion (`non_prod` → `prod`) is a configuration change, not a code change
+- Environment promotion (`masked` → `unmasked`) is a configuration change, not a code change
 - No deployment to cloud is required for this exercise — the container and pipeline shape
   is described here as the intended next step
