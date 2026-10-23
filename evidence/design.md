@@ -119,7 +119,8 @@ external setup.
 | Component | Choice | Reason |
 |---|---|---|
 | Language | Python 3.11+ | Standard for data and scripting; assessors can run without additional tooling |
-| Database | SQLite | Zero-dependency, file-based, full SQL support; swappable for any SQL database |
+| Database (local) | SQLite | Zero-dependency, file-based; allows credential-free local development and CI |
+| Database (production) | Cloud Spanner | Google-native, horizontally scalable, strongly consistent; aligns with GCP as the target cloud ecosystem. Positions the solution to leverage Vertex AI and Google ADK for future LLM/agent runtime integration without cross-cloud complexity. `schema.sql` is written in Spanner DDL. |
 | SQL | `.sql` files | Readable, testable independently, mirrors how queries are managed in production |
 | Config | python-dotenv | Standard `.env` pattern; maps directly to how secrets are injected in CI/CD |
 | Logging | Python stdlib `logging` | No extra dependency; structured enough for future log aggregation |
@@ -142,6 +143,65 @@ external setup.
 - `db.py` connection driver swapped (`sqlite3` → `psycopg2` / `pyodbc`) — queries unchanged
 - Script packaged as a container image; run as a task or job, not a long-running service
 - Access to production data gated by IAM roles and network controls, not application-level logic
+
+---
+
+## Database Schema (DDL)
+
+Schema is written in Cloud Spanner DDL. Locally, `setup.py` creates equivalent SQLite tables
+from the same column definitions. Full DDL is in `schema.sql` at the repo root.
+
+```sql
+CREATE TABLE party_data (
+    party_id            STRING(36)      NOT NULL,
+    full_name           STRING(255),
+    date_of_birth       DATE,
+    address             STRING(500),
+    nationality         STRING(100),
+    entity_type         STRING(20)      NOT NULL,   -- INDIVIDUAL | ENTITY
+    acn                 STRING(20),
+    abn                 STRING(20),
+    risk_rating         STRING(10)      NOT NULL,   -- LOW | MEDIUM | HIGH
+    pep_flag            STRING(1)       NOT NULL,   -- Y | N
+    sanctions_flag      STRING(1)       NOT NULL,   -- Y | N
+) PRIMARY KEY (party_id);
+
+CREATE TABLE account_data (
+    account_id          STRING(36)      NOT NULL,
+    party_id            STRING(36)      NOT NULL,
+    account_type        STRING(20)      NOT NULL,   -- SAVINGS | TRANSACTION | BUSINESS
+    account_number      STRING(50)      NOT NULL,
+    account_status      STRING(20)      NOT NULL,   -- ACTIVE | DORMANT | CLOSED
+    open_date           DATE            NOT NULL,
+    close_date          DATE,
+) PRIMARY KEY (account_id);
+
+CREATE TABLE transaction_data (
+    transaction_id          STRING(36)      NOT NULL,
+    account_number          STRING(50)      NOT NULL,
+    transaction_date        DATE            NOT NULL,
+    transaction_amount      FLOAT64         NOT NULL,
+    transaction_type        STRING(10)      NOT NULL,   -- CREDIT | DEBIT
+    transaction_narrative   STRING(500),
+    transaction_code        STRING(10)      NOT NULL,
+    transaction_code_desc   STRING(100)     NOT NULL,
+    counterparty_bsb        STRING(10),
+    counterparty_name       STRING(255),
+    counterparty_country    STRING(100),
+) PRIMARY KEY (transaction_id);
+
+CREATE TABLE alert_data (
+    alert_id            STRING(36)      NOT NULL,
+    party_id            STRING(36)      NOT NULL,
+    alert_type          STRING(50)      NOT NULL,
+    alert_date          DATE            NOT NULL,
+    alert_status        STRING(20)      NOT NULL,   -- OPEN | CLOSED | ESCALATED
+    alert_source        STRING(100)     NOT NULL,
+    description         STRING(1000),
+) PRIMARY KEY (alert_id);
+```
+
+---
 
 **CI/CD promotion**
 - Pull request triggers GitHub Actions: `ruff` lint → `pytest` → golden output test
