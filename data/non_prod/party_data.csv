@@ -1,0 +1,5 @@
+party_id,full_name,date_of_birth,address,nationality,entity_type,acn,abn,risk_rating,pep_flag,sanctions_flag
+P001,J*** F***,1975-**-**,** **** ******* ****** *** ****,Australian,INDIVIDUAL,,,HIGH,Y,N
+P002,F******** H******* P** L**,****-**-**,** ******** *** ********* *** ****,Australian,ENTITY,123456789,12345678901,MEDIUM,N,N
+P003,J*** T***,1988-**-**,** ****** ** ******** *** ****,Australian,INDIVIDUAL,,,LOW,N,N
+P004,R*** D***,1965-**-**,* ****** **** ***** ** ****,Australian,INDIVIDUAL,,,MEDIUM,N,N

@@ -1,0 +1,4 @@
+alert_id,party_id,alert_type,alert_date,alert_status,alert_source,description
+ALT001,P001,STRUCTURING,2024-10-16,OPEN,Transaction Monitoring System,Multiple cash deposits below reporting threshold detected between 2024-10-01 and 2024-10-15
+ALT002,P001,PEP_MATCH,2024-10-16,OPEN,PEP Screening System,Party matched against Politically Exposed Persons register
+ALT003,P002,HIGH_VOLUME,2024-09-02,CLOSED,Transaction Monitoring System,High volume of international wire transfers to elevated risk jurisdictions

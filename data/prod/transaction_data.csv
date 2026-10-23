@@ -1,0 +1,25 @@
+transaction_id,account_number,transaction_date,transaction_amount,transaction_type,transaction_narrative,transaction_code,transaction_code_desc,counterparty_bsb,counterparty_name,counterparty_country
+TXN001,062000-10000001,2024-10-01,9500.00,CREDIT,Cash deposit - branch,003,Cash Deposit,,,Australia
+TXN002,062000-10000001,2024-10-03,9800.00,CREDIT,Cash deposit - branch,003,Cash Deposit,,,Australia
+TXN003,062000-10000001,2024-10-07,9200.00,CREDIT,Cash deposit - branch,003,Cash Deposit,,,Australia
+TXN004,062000-10000001,2024-10-12,9700.00,CREDIT,Cash deposit - branch,003,Cash Deposit,,,Australia
+TXN005,062000-10000001,2024-10-15,9900.00,CREDIT,Cash deposit - branch,003,Cash Deposit,,,Australia
+TXN006,062000-10000001,2024-09-15,450.00,DEBIT,Grocery purchase,001,Purchase,182512,Coles Supermarkets,Australia
+TXN007,062000-10000001,2024-09-20,2500.00,DEBIT,Monthly rent payment,005,Direct Debit,062000,Real Estate Agency,Australia
+TXN008,062000-10000001,2024-10-20,25000.00,DEBIT,International transfer - personal funds,004,Telegraphic Transfer,,Sunrise Trading LLC,Cayman Islands
+TXN009,062000-10000002,2024-09-01,3000.00,CREDIT,Salary payment,006,Direct Credit,032000,Employer Pty Ltd,Australia
+TXN010,062000-10000002,2024-09-30,1200.00,DEBIT,Credit card payment,005,Direct Debit,033000,ANZ Credit Cards,Australia
+TXN011,033000-20000001,2024-08-01,50000.00,DEBIT,Business remittance,004,Telegraphic Transfer,,Global Sunrise Corp,Cayman Islands
+TXN012,033000-20000001,2024-08-15,35000.00,DEBIT,Business remittance,004,Telegraphic Transfer,,Pacific BVI Holdings,British Virgin Islands
+TXN013,033000-20000001,2024-09-01,45000.00,DEBIT,Business remittance,004,Telegraphic Transfer,,Panama Trade Co,Panama
+TXN014,033000-20000001,2024-09-15,120000.00,CREDIT,Business revenue,006,Direct Credit,012000,Local Client Pty Ltd,Australia
+TXN015,033000-20000001,2024-09-30,8500.00,DEBIT,Office rent,005,Direct Debit,062000,Commercial Property Trust,Australia
+TXN016,082000-30000001,2024-09-05,5500.00,CREDIT,Salary payment,006,Direct Credit,032000,Employer Pty Ltd,Australia
+TXN017,082000-30000001,2024-09-10,85.50,DEBIT,Coffee shop purchase,001,Purchase,802000,Local Cafe,Australia
+TXN018,082000-30000001,2024-09-15,1800.00,DEBIT,Rent payment,005,Direct Debit,062000,Property Manager,Australia
+TXN019,082000-30000001,2024-09-20,250.00,DEBIT,ATM withdrawal,002,Cash Withdrawal,,,Australia
+TXN020,082000-30000001,2024-10-05,5500.00,CREDIT,Salary payment,006,Direct Credit,032000,Employer Pty Ltd,Australia
+TXN021,012000-40000001,2024-09-01,3200.00,CREDIT,Salary payment,006,Direct Credit,012000,Employer Co,Australia
+TXN022,012000-40000001,2024-13-45,,DEBIT,Purchase - electronics,001,Purchase,182512,Electronics Store,Australia
+TXN023,012000-40000001,2024-09-10,500.00,DEBIT,ATM withdrawal,002,Cash Withdrawal,,,Australia
+TXN024,012000-40000001,2024-09-15,1500.00,DEBIT,Rent payment,005,Direct Debit,062000,Property Manager,Australia
