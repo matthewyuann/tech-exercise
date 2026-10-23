@@ -1,0 +1,23 @@
+# Environment config — never commit real credentials
+.env
+
+# Generated SQLite databases — created by setup.py
+data/*.db
+
+# Python virtual environment
+.venv/
+venv/
+
+# Logs — may contain sensitive operational data
+logs/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ruff_cache/
+
+# OS files
+.DS_Store
+Thumbs.db

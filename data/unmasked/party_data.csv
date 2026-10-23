@@ -1,0 +1,5 @@
+party_id,full_name,date_of_birth,address,nationality,entity_type,acn,abn,risk_rating,pep_flag,sanctions_flag
+P001,John Fakename,1975-06-15,"12 Fake Street, Sydney NSW 2000",Australian,INDIVIDUAL,,,HIGH,Y,N
+P002,Fictitious Holdings Pty Ltd,1990-01-01,"99 Invented Ave, Melbourne VIC 3000",Australian,ENTITY,123456789,12345678901,MEDIUM,N,N
+P003,Jane Testperson,1988-11-30,"45 Sample Rd, Brisbane QLD 4000",Australian,INDIVIDUAL,,,LOW,N,N
+P004,Robert Demodata,1965-03-22,"7 Mockup Lane, Perth WA 6000",Australian,INDIVIDUAL,,,MEDIUM,N,N
