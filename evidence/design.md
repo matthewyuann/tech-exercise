@@ -121,7 +121,7 @@ external setup.
 | Language | Python 3.11+ | Standard for data and scripting; assessors can run without additional tooling |
 | Database (local) | SQLite | Zero-dependency, file-based; allows credential-free local development and CI |
 | Database (production) | Cloud Spanner | Google-native, horizontally scalable, strongly consistent; aligns with GCP as the target cloud ecosystem. Positions the solution to leverage Vertex AI and Google ADK for future LLM/agent runtime integration without cross-cloud complexity. `schema.sql` is written in Spanner DDL. |
-| SQL | `.sql` files | Readable, testable independently, mirrors how queries are managed in production |
+| SQL | `.sql` files | Readable, testable independently, mirrors how queries are managed in production. Note: local SQLite queries use `:name` parameter notation; Cloud Spanner uses `@name`. A find-replace in the query files is the only change needed when migrating. |
 | Config | python-dotenv | Standard `.env` pattern; maps directly to how secrets are injected in CI/CD |
 | Logging | Python stdlib `logging` | No extra dependency; structured enough for future log aggregation |
 | Testing | pytest | Standard; integrates with GitHub Actions without configuration |
