@@ -91,3 +91,25 @@ top as a red flag, and a structuring indicator when the pattern is present.
 
 **What was ruled out:** A full transaction table. Appropriate for an audit export or a data
 extract tool — not for an investigator case summary.
+
+---
+
+## 7. Plain text file output over PDF
+
+**Decision:** The script writes output to a dated `.txt` file under `output/YYYY-MM-DD/`
+in addition to stdout. No PDF generation.
+
+**Why:** PDF was considered on the basis that investigators could not accidentally edit an
+immutable file. However, PDFs are not truly immutable — standard tools (Adobe Acrobat,
+browser print-to-PDF) allow modification. The real audit control in a production AML workflow
+is the case management system, not the output file format. The investigator pastes findings
+into the case system, which timestamps and versions everything; the file is a working artefact.
+
+PDF generation (via `reportlab` or `weasyprint`) adds meaningful dependency weight and
+complexity with no material integrity benefit at this scope.
+
+The dated file path (`P001_output_2026-10-25.txt`) provides a lightweight audit trail.
+The `output/` directory is gitignored — investigator outputs are never committed.
+
+**What was ruled out:** PDF generation. Appropriate for a V2 where a locked, distributable
+summary is required — deferred, not dismissed.
