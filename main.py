@@ -13,6 +13,7 @@ import sys
 from datetime import datetime, timezone
 
 from config import get_db_path, get_env_name
+from formatter import format_case_summary
 from loader import build_case_data
 
 logging.basicConfig(
@@ -60,9 +61,10 @@ def main() -> None:
         )
         sys.exit(2)
 
-    # Temporary raw output — formatter.py will replace this
-    import json
-    print(json.dumps(data, indent=2, default=str))
+    output = format_case_summary(
+        data, args.party_id, args.from_date, args.to_date, env, as_of
+    )
+    print(output)
 
 
 if __name__ == "__main__":

@@ -44,6 +44,14 @@ layer had no purpose without a custom frontend. ADK added framework complexity w
 benefit for this scope. Both were removed. The final stack — plain Python, SQLite, `.sql` files —
 was simpler, faster to deliver, and easier for reviewers to run.
 
+**4. Requesting a plan before implementation**
+Before building `formatter.py` — the most important user-facing component — I asked Claude Code
+to present the design first: output sections, helper functions, structuring indicator logic, and
+how it would wire into `main.py`. I reviewed and approved the design before any code was written.
+This is deliberate: for components where the output contract matters (what the investigator actually
+sees), reviewing the plan costs minutes and prevents the much more expensive rework of fixing
+the wrong output structure after it is built.
+
 ---
 
 ## Where I Intervened

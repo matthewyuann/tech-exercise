@@ -75,3 +75,19 @@ reviewers to generate or source data themselves.
 committed to source control. Data would live in a governed pipeline and be loaded into
 controlled environments. The folder names (`masked/unmasked` rather than `prod/non_prod`)
 were chosen deliberately to avoid implying these are real production datasets.
+
+---
+
+## 6. No per-transaction table in the case summary output
+
+**Decision:** The formatter renders aggregated statistics, a type breakdown, and indicator flags —
+not a row-per-transaction table.
+
+**Why:** In production, a single party may hold many accounts each with hundreds of transactions.
+A full transaction table would make the summary unusable for copy-paste into case notes and would
+bury the key signals (offshore activity, structuring pattern) in raw data. The formatter surfaces
+what an L1 investigator needs: volume, value, channel breakdown, offshore activity flagged at the
+top as a red flag, and a structuring indicator when the pattern is present.
+
+**What was ruled out:** A full transaction table. Appropriate for an audit export or a data
+extract tool — not for an investigator case summary.

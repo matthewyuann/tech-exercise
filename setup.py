@@ -113,8 +113,14 @@ def setup_environment(env: str) -> None:
     logger.info("%-10s creating database at %s", env, db_path)
 
     conn = sqlite3.connect(db_path)
-    conn.execute("PRAGMA foreign_keys = ON")
     conn.executescript(SQLITE_SCHEMA)
+
+    # Delete in reverse dependency order before reseeding
+    conn.execute("PRAGMA foreign_keys = OFF")
+    for table in reversed(TABLES):
+        conn.execute(f"DELETE FROM {table}")
+    conn.execute("PRAGMA foreign_keys = ON")
+    conn.commit()
 
     for table in TABLES:
         csv_path = csv_dir / f"{table}.csv"
