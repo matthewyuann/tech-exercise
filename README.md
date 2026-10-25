@@ -90,43 +90,59 @@ pytest tests/
 python main.py --party-id P001
 ```
 
-**Output (formatted case summary — in progress)**
+**Output**
 ```
-========================================
+============================================================
 AML CASE SUMMARY
-Party ID    : P001
-Environment : masked
-Data as of  : 2026-10-24 01:20 UTC
-========================================
+============================================================
+Party ID   : P001
+As of      : 2026-10-25 02:13:34 UTC
+Environment: masked
+Date filter: none (all transactions)
 
-PARTY PROFILE
-  Name           : J*** F***
-  Date of Birth  : 1975-**-**
-  Entity Type    : INDIVIDUAL
-  Risk Rating    : HIGH
-  PEP Flag       : Y
-  Sanctions Flag : N
+--- RISK SIGNALS ---
+Risk rating  : HIGH
+PEP          : YES [!]
+Sanctions    : No
+Open alerts  : 2
 
-ACCOUNTS (2)
-  A001  TRANSACTION  062000-10000001  ACTIVE   Opened 2018-03-01
-  A002  SAVINGS      062000-10000002  ACTIVE   Opened 2020-07-15
+--- PARTY PROFILE ---
+Name         : J*** F***
+Date of birth: 1975-**-**
+Entity type  : INDIVIDUAL
+Nationality  : Australian
+Address      : ** **** ******* ****** *** ****
 
-OBSERVATIONS
-  • PEP flag active
-    Source: party_data — P001
+--- LINKED ACCOUNTS (2 records) ---
+Account Number         Type            Status     Opened       Closed
+---------------------------------------------------------------------
+062000-10000001        TRANSACTION     ACTIVE     2018-03-01   —
+062000-10000002        SAVINGS         ACTIVE     2020-07-15   —
 
-  • 2 open alerts on record
-    Source: alert_data — ALT001, ALT002
+--- TRANSACTIONS (10 records) ---
+Total CREDIT : AUD    51,100.00
+Total DEBIT  : AUD    29,150.00
 
-  • 5 cash deposits below AUD $10,000 reporting threshold
-    Source: transaction_data — TXN001, TXN002, TXN003, TXN004, TXN005
+By type:
+  High-Risk Country Activity [!]   1 transaction    AUD    25,000.00
+  Cash Deposit                     5 transactions   AUD    48,100.00
+  Direct Credit                    1 transaction    AUD     3,000.00
+  Direct Debit                     2 transactions   AUD     3,700.00
+  Purchase                         1 transaction    AUD       450.00
+  Telegraphic Transfer             1 transaction    AUD    25,000.00
 
-  • 1 international telegraphic transfer — Cayman Islands
-    Source: transaction_data — TXN008
+[!] STRUCTURING INDICATOR: 4 cash deposits between AUD 9,500.00
+    and AUD 10,000.00 (reporting threshold: AUD 10,000.00)
 
-----------------------------------------
+--- ALERTS (2 records) ---
+Alert ID   Type       Date         Status   Description
+------------------------------------------------------------------------
+ALT001     STRUCTURING  2024-10-16  OPEN    Multiple cash deposits below threshold
+ALT002     PEP_MATCH    2024-10-16  OPEN    Party matched against PEP register
+
+============================================================
 Decision reserved for the investigator.
-----------------------------------------
+============================================================
 ```
 
 **Abstain path** — unknown party:
@@ -140,7 +156,6 @@ python main.py --party-id P999
 
 ## Known Limitations
 
-- **Formatted output not yet complete** — `formatter.py` is in progress. Current output is raw JSON.
 - **Synthetic data only** — 4 parties (P001–P004) covering high-risk, medium-risk, clean and DQ scenarios.
 - **SQLite only** — production target is Cloud Spanner (see `evidence/design.md`).
 - **No authentication or access control** — enforced at the environment/infrastructure layer in production.
@@ -160,7 +175,7 @@ Design decisions, architecture, AI tooling usage and operational notes are in `e
 | `evidence/agentic-workflow.md` | AI tools used, steering moments, interventions, mistakes caught |
 | `evidence/verify.md` | Tests, checks, known gaps *(in progress)* |
 | `evidence/operate.md` | Run steps, exit codes, logs, failure modes *(in progress)* |
-| `evidence/decisions.md` | Key decision records *(in progress)* |
+| `evidence/decisions.md` | 7 key decision records with rationale and trade-offs |
 
 ---
 
@@ -175,6 +190,7 @@ aml-case-summary/
   queries/           Parameterised SQL files, one per table
   evidence/          Design documentation and evidence pack
   main.py            CLI entry point
+  formatter.py       Renders structured plain-text case summary
   setup.py           Seeds SQLite databases from CSV files
   config.py          Environment configuration
   db.py              Database connection and query execution

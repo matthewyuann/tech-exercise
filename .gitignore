@@ -11,6 +11,9 @@ venv/
 # Logs — may contain sensitive operational data
 logs/
 
+# Generated case summary output files — never commit investigator outputs
+output/
+
 # Python cache
 __pycache__/
 *.py[cod]
