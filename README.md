@@ -175,7 +175,7 @@ Design decisions, architecture, AI tooling usage and operational notes are in `e
 | `evidence/agentic-workflow.md` | AI tools used, steering moments, interventions, mistakes caught |
 | `evidence/verify.md` | Tests run, results, local vs CI, known gaps |
 | `evidence/operate.md` | Run steps, exit codes, logs, failure modes, local-to-cloud |
-| `evidence/decisions.md` | 8 key decision records with rationale and trade-offs |
+| `evidence/decisions.md` | 9 key decision records with rationale and trade-offs |
 
 ---
 
@@ -197,7 +197,7 @@ aml-case-summary/
   config.py          Environment configuration
   db.py              Database connection and query execution
   loader.py          Data retrieval and DQ handling
-  verify.sh          Single command: seed, lint, test
+  verify.sh          Single command: seed, lint, format check, test
   requirements.txt
   .env.example
 ```

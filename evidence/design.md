@@ -82,10 +82,11 @@ Maintaining separate `unmasked/` and `masked/` CSV folders avoids writing and te
 masking function. The trade-off is duplicated data that must be kept in sync manually.
 For this scope, the simplicity benefit outweighs the maintenance risk.
 
-**stdout over a file output**
-Output goes to stdout so investigators can copy directly into case notes without managing
-output files. A `--output` flag to redirect to a `.txt` file is a natural next step but
-was out of scope for this timebox.
+**stdout and dated text file**
+Output goes to stdout and is also written to `output/YYYY-MM-DD/<party_id>_output_<date>.txt`.
+stdout allows direct copy-paste into case notes; the dated file provides a lightweight audit
+trail. The `output/` directory is gitignored — investigator outputs are never committed.
+PDF generation was considered and deferred — see `decisions.md` #7.
 
 **No LLM in the product**
 The script is fully deterministic — no language model is used. This keeps the solution
@@ -137,10 +138,9 @@ external setup.
 - All credentials are illustrative (no real credentials exist)
 
 **Production path**
-- SQLite replaced by a governed database (PostgreSQL, SQL Server, or cloud-managed equivalent)
-- `.env` replaced by a secrets manager (AWS Secrets Manager, Azure Key Vault, GCP Secret Manager)
-- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` injected at runtime by the pipeline
-- `db.py` connection driver swapped (`sqlite3` → `psycopg2` / `pyodbc`) — queries unchanged
+- SQLite replaced by Cloud Spanner — connection string and `:name` → `@name` parameter notation change; queries and application code are unchanged
+- `.env` replaced by GCP Secret Manager — credentials injected at runtime by the pipeline
+- `db.py` connection driver swapped (`sqlite3` → Cloud Spanner client library) — queries unchanged
 - Script packaged as a container image; run as a task or job, not a long-running service
 - Access to production data gated by IAM roles and network controls, not application-level logic
 

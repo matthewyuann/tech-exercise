@@ -1,6 +1,6 @@
 # Decisions
 
-Five key decisions made during this build, including trade-offs and what was intentionally left out.
+Nine key decisions made during this build, including trade-offs and what was intentionally left out.
 
 ---
 

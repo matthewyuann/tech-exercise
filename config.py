@@ -13,7 +13,7 @@ BASE_DIR = Path(__file__).parent
 VALID_ENVS = {"masked", "unmasked"}
 
 
-def get_db_path() -> Path:
+def get_db_path(base_dir: Path | None = None) -> Path:
     """Return the SQLite database path for the configured environment."""
     env = os.getenv("DB_ENV", "masked").strip().lower()
 
@@ -23,7 +23,8 @@ def get_db_path() -> Path:
             f"Check your .env file."
         )
 
-    db_path = BASE_DIR / "data" / f"{env}.db"
+    root = base_dir if base_dir is not None else BASE_DIR
+    db_path = root / "data" / f"{env}.db"
 
     if not db_path.exists():
         raise FileNotFoundError(
