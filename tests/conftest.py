@@ -12,7 +12,7 @@ import pytest
 from setup import SQLITE_SCHEMA
 
 TEST_ACCOUNT = "062000-99999999"
-TEST_PARTY   = "P001"
+TEST_PARTY = "P001"
 
 
 @pytest.fixture
@@ -30,47 +30,129 @@ def test_db(tmp_path):
 
     conn.execute(
         "INSERT INTO party_data VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        (TEST_PARTY, "Test Person", "1990-01-01", "1 Test St",
-         "Australian", "INDIVIDUAL", None, None, "HIGH", "Y", "N"),
+        (
+            TEST_PARTY,
+            "Test Person",
+            "1990-01-01",
+            "1 Test St",
+            "Australian",
+            "INDIVIDUAL",
+            None,
+            None,
+            "HIGH",
+            "Y",
+            "N",
+        ),
     )
     conn.execute(
         "INSERT INTO account_data VALUES (?,?,?,?,?,?,?)",
-        ("ACC001", TEST_PARTY, "TRANSACTION", TEST_ACCOUNT, "ACTIVE", "2020-01-01", None),
+        (
+            "ACC001",
+            TEST_PARTY,
+            "TRANSACTION",
+            TEST_ACCOUNT,
+            "ACTIVE",
+            "2020-01-01",
+            None,
+        ),
     )
 
     # Valid transaction
     conn.execute(
         "INSERT INTO transaction_data VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        ("TXN_OK", TEST_ACCOUNT, "2024-10-01", 500.00,
-         "DEBIT", "Test purchase", "001", "Purchase", None, None, None),
+        (
+            "TXN_OK",
+            TEST_ACCOUNT,
+            "2024-10-01",
+            500.00,
+            "DEBIT",
+            "Test purchase",
+            "001",
+            "Purchase",
+            None,
+            None,
+            None,
+        ),
     )
     # Invalid date
     conn.execute(
         "INSERT INTO transaction_data VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        ("TXN_BAD_DATE", TEST_ACCOUNT, "2024-13-45", 200.00,
-         "DEBIT", "Bad date txn", "001", "Purchase", None, None, None),
+        (
+            "TXN_BAD_DATE",
+            TEST_ACCOUNT,
+            "2024-13-45",
+            200.00,
+            "DEBIT",
+            "Bad date txn",
+            "001",
+            "Purchase",
+            None,
+            None,
+            None,
+        ),
     )
     # Missing amount
     conn.execute(
         "INSERT INTO transaction_data VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        ("TXN_BAD_AMT", TEST_ACCOUNT, "2024-10-02", None,
-         "DEBIT", "Missing amount", "001", "Purchase", None, None, None),
+        (
+            "TXN_BAD_AMT",
+            TEST_ACCOUNT,
+            "2024-10-02",
+            None,
+            "DEBIT",
+            "Missing amount",
+            "001",
+            "Purchase",
+            None,
+            None,
+            None,
+        ),
     )
     # Two near-threshold cash deposits (triggers structuring indicator)
     conn.execute(
         "INSERT INTO transaction_data VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        ("TXN_STRUCT1", TEST_ACCOUNT, "2024-10-03", 9600.00,
-         "CREDIT", "Cash deposit", "003", "Cash Deposit", None, None, None),
+        (
+            "TXN_STRUCT1",
+            TEST_ACCOUNT,
+            "2024-10-03",
+            9600.00,
+            "CREDIT",
+            "Cash deposit",
+            "003",
+            "Cash Deposit",
+            None,
+            None,
+            None,
+        ),
     )
     conn.execute(
         "INSERT INTO transaction_data VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-        ("TXN_STRUCT2", TEST_ACCOUNT, "2024-10-04", 9700.00,
-         "CREDIT", "Cash deposit", "003", "Cash Deposit", None, None, None),
+        (
+            "TXN_STRUCT2",
+            TEST_ACCOUNT,
+            "2024-10-04",
+            9700.00,
+            "CREDIT",
+            "Cash deposit",
+            "003",
+            "Cash Deposit",
+            None,
+            None,
+            None,
+        ),
     )
 
     conn.execute(
         "INSERT INTO alert_data VALUES (?,?,?,?,?,?,?)",
-        ("ALT001", TEST_PARTY, "STRUCTURING", "2024-10-15", "OPEN", "SYSTEM", "Test alert"),
+        (
+            "ALT001",
+            TEST_PARTY,
+            "STRUCTURING",
+            "2024-10-15",
+            "OPEN",
+            "SYSTEM",
+            "Test alert",
+        ),
     )
 
     conn.execute("PRAGMA foreign_keys = ON")

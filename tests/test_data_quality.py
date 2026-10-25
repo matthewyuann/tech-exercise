@@ -15,30 +15,56 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 
 EXPECTED_COLUMNS = {
     "party_data": {
-        "party_id", "full_name", "date_of_birth", "address", "nationality",
-        "entity_type", "acn", "abn", "risk_rating", "pep_flag", "sanctions_flag",
+        "party_id",
+        "full_name",
+        "date_of_birth",
+        "address",
+        "nationality",
+        "entity_type",
+        "acn",
+        "abn",
+        "risk_rating",
+        "pep_flag",
+        "sanctions_flag",
     },
     "account_data": {
-        "account_id", "party_id", "account_type", "account_number",
-        "account_status", "open_date", "close_date",
+        "account_id",
+        "party_id",
+        "account_type",
+        "account_number",
+        "account_status",
+        "open_date",
+        "close_date",
     },
     "transaction_data": {
-        "transaction_id", "account_number", "transaction_date", "transaction_amount",
-        "transaction_type", "transaction_narrative", "transaction_code",
-        "transaction_code_desc", "counterparty_bsb", "counterparty_name",
+        "transaction_id",
+        "account_number",
+        "transaction_date",
+        "transaction_amount",
+        "transaction_type",
+        "transaction_narrative",
+        "transaction_code",
+        "transaction_code_desc",
+        "counterparty_bsb",
+        "counterparty_name",
         "counterparty_country",
     },
     "alert_data": {
-        "alert_id", "party_id", "alert_type", "alert_date",
-        "alert_status", "alert_source", "description",
+        "alert_id",
+        "party_id",
+        "alert_type",
+        "alert_date",
+        "alert_status",
+        "alert_source",
+        "description",
     },
 }
 
 REQUIRED_FIELDS = {
-    "party_data":    ["party_id"],
-    "account_data":  ["account_id", "party_id"],
+    "party_data": ["party_id"],
+    "account_data": ["account_id", "party_id"],
     "transaction_data": ["transaction_id", "account_number"],
-    "alert_data":    ["alert_id", "party_id"],
+    "alert_data": ["alert_id", "party_id"],
 }
 
 ENVIRONMENTS = ["masked", "unmasked"]
@@ -50,9 +76,9 @@ def test_csv_has_expected_columns(env, table):
     csv_path = DATA_DIR / env / f"{table}.csv"
     with open(csv_path, newline="", encoding="utf-8") as f:
         actual = set(csv.DictReader(f).fieldnames or [])
-    assert actual == EXPECTED_COLUMNS[table], (
-        f"{env}/{table}.csv columns do not match schema"
-    )
+    assert (
+        actual == EXPECTED_COLUMNS[table]
+    ), f"{env}/{table}.csv columns do not match schema"
 
 
 def test_masked_and_unmasked_columns_match():
@@ -62,9 +88,9 @@ def test_masked_and_unmasked_columns_match():
             csv_path = DATA_DIR / env / f"{table}.csv"
             with open(csv_path, newline="", encoding="utf-8") as f:
                 cols[env] = set(csv.DictReader(f).fieldnames or [])
-        assert cols["masked"] == cols["unmasked"], (
-            f"{table}.csv columns differ between masked and unmasked"
-        )
+        assert (
+            cols["masked"] == cols["unmasked"]
+        ), f"{table}.csv columns differ between masked and unmasked"
 
 
 @pytest.mark.parametrize("env", ENVIRONMENTS)
@@ -75,6 +101,6 @@ def test_required_fields_not_blank(env, table, fields):
         rows = list(csv.DictReader(f))
     for row in rows:
         for field in fields:
-            assert row.get(field), (
-                f"{env}/{table}.csv has a blank '{field}' — required field"
-            )
+            assert row.get(
+                field
+            ), f"{env}/{table}.csv has a blank '{field}' — required field"

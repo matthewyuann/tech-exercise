@@ -45,7 +45,13 @@ def test_unknown_party_returns_none(test_db):
 
 def test_build_case_data_returns_expected_structure(test_db):
     data = build_case_data(test_db, "P001")
-    assert set(data.keys()) == {"party", "accounts", "transactions", "alerts", "dq_warnings"}
+    assert set(data.keys()) == {
+        "party",
+        "accounts",
+        "transactions",
+        "alerts",
+        "dq_warnings",
+    }
     assert data["party"]["party_id"] == "P001"
     assert isinstance(data["accounts"], list)
     assert isinstance(data["transactions"], list)

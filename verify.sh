@@ -15,6 +15,10 @@ echo "--- Lint (ruff) ---"
 python -m ruff check .
 echo ""
 
+echo "--- Format check (ruff format) ---"
+python -m ruff format --check .
+echo ""
+
 echo "--- Tests (pytest) ---"
 python -m pytest tests/ -v
 echo ""

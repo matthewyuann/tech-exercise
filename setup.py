@@ -128,8 +128,7 @@ def setup_environment(env: str) -> None:
         if not csv_path.exists():
             conn.close()
             raise FileNotFoundError(
-                f"Seed file not found: {csv_path}\n"
-                f"Expected data/{env}/{table}.csv"
+                f"Seed file not found: {csv_path}\n" f"Expected data/{env}/{table}.csv"
             )
 
         count = seed_table(conn, table, csv_path)
@@ -143,7 +142,9 @@ def setup_environment(env: str) -> None:
 def main() -> None:
     for env in ENVIRONMENTS:
         setup_environment(env)
-    logger.info("Setup complete — run: python main.py --party-id <id> [--env masked|unmasked]")
+    logger.info(
+        "Setup complete — run: python main.py --party-id <id> [--env masked|unmasked]"
+    )
 
 
 if __name__ == "__main__":

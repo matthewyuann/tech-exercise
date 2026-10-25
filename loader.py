@@ -14,7 +14,7 @@ logger = logging.getLogger("loader")
 
 QUERIES_DIR = Path(__file__).parent / "queries"
 CASH_REPORTING_THRESHOLD = 10_000.00  # AUD — illustrative, not regulatory guidance
-STRUCTURING_WINDOW = 500.00           # Amount below threshold to flag as near-threshold
+STRUCTURING_WINDOW = 500.00  # Amount below threshold to flag as near-threshold
 
 
 def _is_valid_date(value: str | None) -> bool:
@@ -68,9 +68,7 @@ def load_transactions(
         issues = []
 
         if not _is_valid_date(row.get("transaction_date")):
-            issues.append(
-                f"invalid date '{row.get('transaction_date')}'"
-            )
+            issues.append(f"invalid date '{row.get('transaction_date')}'")
 
         if row.get("transaction_amount") is None:
             issues.append("missing transaction_amount")
@@ -80,7 +78,9 @@ def load_transactions(
                 f"Transaction {row['transaction_id']} excluded — {'; '.join(issues)}"
             )
             logger.warning(
-                "transaction_data — %s excluded: %s", row["transaction_id"], "; ".join(issues)
+                "transaction_data — %s excluded: %s",
+                row["transaction_id"],
+                "; ".join(issues),
             )
         else:
             valid.append(row)
