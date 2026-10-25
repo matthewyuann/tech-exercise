@@ -149,7 +149,7 @@ external setup.
 ## Database Schema (DDL)
 
 Schema is written in Cloud Spanner DDL. Locally, `setup.py` creates equivalent SQLite tables
-from the same column definitions. Full DDL is in `schema.sql` at the repo root.
+from the same column definitions. Full DDL is in `data/schema.sql`.
 
 ```sql
 CREATE TABLE party_data (
