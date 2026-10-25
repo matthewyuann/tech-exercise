@@ -72,14 +72,14 @@ python main.py --party-id P001
 ## Running Tests and Verification
 
 ```bash
-# Run all checks (lint + tests + schema validation)
+# Run all checks (lint + tests)
 ./verify.sh
 
 # Run tests only
-pytest tests/
+pytest tests/ -v
 ```
 
-> Tests and `verify.sh` are in progress. This section will be updated as they are added.
+40 tests across 4 files — formatter output, DQ handling, config validation, CSV schema.
 
 ---
 
