@@ -143,7 +143,7 @@ def main() -> None:
     for env in ENVIRONMENTS:
         setup_environment(env)
     logger.info(
-        "Setup complete — run: python main.py --party-id <id> [--env masked|unmasked]"
+        "Setup complete — run: python main.py --party-id <id>"
     )
 
 

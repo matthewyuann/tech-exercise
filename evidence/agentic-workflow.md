@@ -52,6 +52,15 @@ This is deliberate: for components where the output contract matters (what the i
 sees), reviewing the plan costs minutes and prevents the much more expensive rework of fixing
 the wrong output structure after it is built.
 
+**5. Directing the test strategy before the tests were written**
+Before building the test suite, I asked Claude Code to explain what each test file would cover,
+why each scenario was worth testing, and how the tests would verify the scenario — not just a list
+of test names. This was intentional: I needed to be able to explain every test in the suite myself,
+not just run it. The discussion covered the four-file structure (`test_formatter`, `test_loader`,
+`test_config`, `test_data_quality`), the use of shared fixtures in `conftest.py`, and why certain
+approaches (monkeypatching `BASE_DIR`, using `tmp_path`, checking CSV schema parity) were chosen
+over simpler alternatives. All 40 tests were manually run and verified before committing the suite.
+
 ---
 
 ## Where I Intervened

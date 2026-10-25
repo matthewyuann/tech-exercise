@@ -1,6 +1,12 @@
 # Decisions
 
-Five key decisions made during this build, including trade-offs and what was intentionally left out.
+Nine key decisions made during this build, including trade-offs and what was intentionally left out.
+
+---
+
+## High Priority Decisions
+
+The five decisions most central to the architecture, product design and regulatory alignment of this solution.
 
 ---
 
@@ -62,23 +68,7 @@ overhead), FastAPI (no consuming frontend exists in this scope).
 
 ---
 
-## 5. Seed CSV files committed to the repository
-
-**Decision:** The CSV seed files are committed to the repository under `data/masked/` and
-`data/unmasked/`.
-
-**Why:** The exercise requires the solution to run from a clean checkout without external
-dependencies. Committing the seed data is the only way to satisfy this without requiring
-reviewers to generate or source data themselves.
-
-**Trade-off acknowledged:** In a real delivery, no data — synthetic or otherwise — would be
-committed to source control. Data would live in a governed pipeline and be loaded into
-controlled environments. The folder names (`masked/unmasked` rather than `prod/non_prod`)
-were chosen deliberately to avoid implying these are real production datasets.
-
----
-
-## 6. No per-transaction table in the case summary output
+## 5. No per-transaction table in the case summary output
 
 **Decision:** The formatter renders aggregated statistics, a type breakdown, and indicator flags —
 not a row-per-transaction table.
@@ -91,6 +81,28 @@ top as a red flag, and a structuring indicator when the pattern is present.
 
 **What was ruled out:** A full transaction table. Appropriate for an audit export or a data
 extract tool — not for an investigator case summary.
+
+---
+
+## Lower Priority Decisions
+
+Implementation, tooling and timebox decisions that are documented for completeness.
+
+---
+
+## 6. Seed CSV files committed to the repository
+
+**Decision:** The CSV seed files are committed to the repository under `data/masked/` and
+`data/unmasked/`.
+
+**Why:** The exercise requires the solution to run from a clean checkout without external
+dependencies. Committing the seed data is the only way to satisfy this without requiring
+reviewers to generate or source data themselves.
+
+**Trade-off acknowledged:** In a real delivery, no data — synthetic or otherwise — would be
+committed to source control. Data would live in a governed pipeline and be loaded into
+controlled environments. The folder names (`masked/unmasked` rather than `prod/non_prod`)
+were chosen deliberately to avoid implying these are real production datasets.
 
 ---
 

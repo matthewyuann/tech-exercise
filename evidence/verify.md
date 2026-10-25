@@ -36,6 +36,7 @@ All 40 tests pass. Manually verified by running `pytest tests/ -v` before commit
 |---|---|---|
 | Database seed (`setup.py`) | Run once before script use; re-run via `verify.sh` | Run at start of every CI job — CI runners start clean |
 | Lint (`ruff`) | `bash verify.sh` or `python -m ruff check .` | Same command in CI step |
+| Format check (`ruff format`) | `bash verify.sh` or `python -m ruff format --check .` | Same command in CI step |
 | Tests (`pytest`) | `bash verify.sh` or `pytest tests/ -v` | Same command in CI step |
 | End-to-end smoke test | Manual — run `python main.py --party-id P001` and inspect output | Not yet automated — next step |
 | Type checking | Not yet added | Would add `mypy` or `pyright` as a CI step |
@@ -55,7 +56,7 @@ No further configuration is needed — `verify.sh` is the single source of truth
 
 See `design.md` — Production and Cloud Shape for the full promotion path. In summary:
 
-- **PR** → GitHub Actions runs `verify.sh` (lint + tests). Must pass before merge.
+- **PR** → GitHub Actions runs `verify.sh` (lint + format check + tests). Must pass before merge.
 - **Merge to main** → builds and pushes a versioned container image.
 - **Promotion** → environment selection (`masked` → `unmasked`) is a configuration change, not a code change.
 

@@ -7,7 +7,6 @@ Python error deep in the call stack. The config module catches both early.
 
 import pytest
 
-import config
 from config import get_db_path
 
 
@@ -18,8 +17,6 @@ def test_invalid_env_raises_value_error(monkeypatch):
 
 
 def test_missing_db_raises_file_not_found(monkeypatch, tmp_path):
-    # Point BASE_DIR at an empty temp directory — no .db file exists there
     monkeypatch.setenv("DB_ENV", "masked")
-    monkeypatch.setattr(config, "BASE_DIR", tmp_path)
     with pytest.raises(FileNotFoundError, match="setup.py"):
-        get_db_path()
+        get_db_path(base_dir=tmp_path)
