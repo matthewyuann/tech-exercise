@@ -11,6 +11,7 @@ import argparse
 import logging
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
 
 from config import get_db_path, get_env_name
 from formatter import format_case_summary
@@ -65,6 +66,14 @@ def main() -> None:
         data, args.party_id, args.from_date, args.to_date, env, as_of
     )
     print(output)
+
+    # Write to output/YYYY-MM-DD/<party_id>_output_<date>.txt
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    out_dir = Path(__file__).parent / "output" / today
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_file = out_dir / f"{args.party_id}_output_{today}.txt"
+    out_file.write_text(output, encoding="utf-8")
+    logger.info("output written to %s", out_file)
 
 
 if __name__ == "__main__":
