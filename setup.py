@@ -1,5 +1,5 @@
 """
-setup.py — creates and seeds the prod and non_prod SQLite databases from CSV files.
+setup.py — creates and seeds the masked and unmasked SQLite databases from CSV files.
 
 Run once before using main.py:
     python setup.py

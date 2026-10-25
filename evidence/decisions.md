@@ -100,10 +100,7 @@ extract tool — not for an investigator case summary.
 in addition to stdout. No PDF generation.
 
 **Why:** PDF was considered on the basis that investigators could not accidentally edit an
-immutable file. However, PDFs are not truly immutable — standard tools (Adobe Acrobat,
-browser print-to-PDF) allow modification. The real audit control in a production AML workflow
-is the case management system, not the output file format. The investigator pastes findings
-into the case system, which timestamps and versions everything; the file is a working artefact.
+immutable file.
 
 PDF generation (via `reportlab` or `weasyprint`) adds meaningful dependency weight and
 complexity with no material integrity benefit at this scope.
