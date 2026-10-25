@@ -6,11 +6,12 @@
 bash verify.sh
 ```
 
-This runs three steps in sequence, stopping immediately on any failure:
+This runs four steps in sequence, stopping immediately on any failure:
 
 1. `python setup.py` — seeds the SQLite databases from the CSV source files
 2. `python -m ruff check .` — lints all Python source files
-3. `python -m pytest tests/ -v` — runs the full test suite
+3. `python -m ruff format --check .` — verifies consistent code formatting
+4. `python -m pytest tests/ -v` — runs the full test suite
 
 Requires: virtual environment activated, dependencies installed (`pip install -r requirements.txt`).
 
