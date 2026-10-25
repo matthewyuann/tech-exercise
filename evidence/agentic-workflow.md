@@ -87,5 +87,6 @@ the wrong output structure after it is built.
 - After each build phase, I run the script myself end-to-end and verify the output matches the intended design — correct sections, correct data, correct flags. AI-generated output is not trusted until I have seen it produce the right result with my own eyes.
 - Tests are written to verify behaviour, not just to pass. Edge cases and abstain paths are covered explicitly.
 - End-to-end smoke test run after each major build phase before committing.
+- The full test suite (`pytest tests/ -v`) was manually run and validated — 40 tests passing — before committing the tests to the branch.
 
 _This document is updated as development progresses._

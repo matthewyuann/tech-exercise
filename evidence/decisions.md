@@ -110,3 +110,40 @@ The `output/` directory is gitignored — investigator outputs are never committ
 
 **What was ruled out:** PDF generation. Appropriate for a V2 where a locked, distributable
 summary is required — deferred, not dismissed.
+
+---
+
+## 8. No GitHub Actions workflow in this timebox
+
+**Decision:** A `.github/workflows/ci.yml` file was not built. `verify.sh` is the
+verification artefact for this submission.
+
+**Why:** `verify.sh` runs exactly the checks a CI pipeline would run — seed, lint, test —
+in the same order, with the same failure behaviour (`set -euo pipefail`). A GitHub Actions
+workflow file would automate triggering `verify.sh` on push and PR, but adds no new
+verification capability. The spec requires "a command or script that runs the main checks
+you would expect to run in CI" — `verify.sh` satisfies this directly.
+
+**What was ruled out:** `.github/workflows/ci.yml`. The workflow would be a single step:
+`pip install -r requirements.txt && bash verify.sh`. Straightforward to add as the
+immediate next step after submission.
+
+---
+
+## 9. Format check via ruff over pre-commit hooks
+
+**Decision:** `verify.sh` runs `ruff format --check .` to enforce consistent code formatting.
+No pre-commit hook framework is configured.
+
+**Why:** Pre-commit hooks (`pre-commit` framework with a `.pre-commit-config.yaml`) were
+considered as a way to block unformatted or non-linting code at commit time. However, they
+require every contributor to run `pre-commit install` after cloning — an undocumented setup
+step that adds friction for reviewers and increases onboarding complexity.
+
+`ruff format --check` in `verify.sh` provides the same protection in CI without any
+additional tooling or install steps. It fails if code is not formatted, enforcing the same
+standard without the setup overhead.
+
+**What was ruled out:** Pre-commit hooks with `black` + `ruff`. Pre-commit is the right
+choice for a team working on a shared codebase — it prevents bad commits from entering the
+history in the first place. Deferred as a required next step before team onboarding.

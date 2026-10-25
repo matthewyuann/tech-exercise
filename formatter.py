@@ -12,16 +12,34 @@ LINE_WIDTH = 60
 
 # Illustrative list — in production, source from FATF/AUSTRAC guidance and maintain as config.
 # Covers FATF blacklist, common offshore secrecy jurisdictions, and high-risk jurisdictions.
-HIGH_RISK_COUNTRIES: frozenset[str] = frozenset({
-    # FATF blacklist
-    "north korea", "iran", "myanmar",
-    # FATF grey list (selected)
-    "syria", "afghanistan", "yemen", "somalia", "sudan", "south sudan",
-    "iraq", "libya", "mali", "nigeria",
-    # Offshore / secrecy jurisdictions
-    "cayman islands", "british virgin islands", "panama", "seychelles",
-    "vanuatu", "belize", "marshall islands", "nauru",
-})
+HIGH_RISK_COUNTRIES: frozenset[str] = frozenset(
+    {
+        # FATF blacklist
+        "north korea",
+        "iran",
+        "myanmar",
+        # FATF grey list (selected)
+        "syria",
+        "afghanistan",
+        "yemen",
+        "somalia",
+        "sudan",
+        "south sudan",
+        "iraq",
+        "libya",
+        "mali",
+        "nigeria",
+        # Offshore / secrecy jurisdictions
+        "cayman islands",
+        "british virgin islands",
+        "panama",
+        "seychelles",
+        "vanuatu",
+        "belize",
+        "marshall islands",
+        "nauru",
+    }
+)
 
 
 def _section(title: str) -> str:
@@ -132,16 +150,25 @@ def _render_transactions(
         return "\n".join(lines)
 
     credits = [t for t in transactions if t.get("transaction_type") == "CREDIT"]
-    debits  = [t for t in transactions if t.get("transaction_type") == "DEBIT"]
-    total_credit = sum(t["transaction_amount"] for t in credits if t.get("transaction_amount") is not None)
-    total_debit  = sum(t["transaction_amount"] for t in debits  if t.get("transaction_amount") is not None)
+    debits = [t for t in transactions if t.get("transaction_type") == "DEBIT"]
+    total_credit = sum(
+        t["transaction_amount"]
+        for t in credits
+        if t.get("transaction_amount") is not None
+    )
+    total_debit = sum(
+        t["transaction_amount"]
+        for t in debits
+        if t.get("transaction_amount") is not None
+    )
 
     lines.append(f"Total CREDIT : {_fmt_amount(total_credit)}")
     lines.append(f"Total DEBIT  : {_fmt_amount(total_debit)}")
 
     # Breakdown by transaction type — high-risk country activity shown first as a key red flag
     offshore = [
-        t for t in transactions
+        t
+        for t in transactions
         if t.get("counterparty_country")
         and t["counterparty_country"].lower() in HIGH_RISK_COUNTRIES
     ]
@@ -169,7 +196,8 @@ def _render_transactions(
 
     # Structuring indicator
     near_threshold = [
-        t for t in transactions
+        t
+        for t in transactions
         if t.get("transaction_code") == CASH_DEPOSIT_CODE
         and t.get("transaction_amount") is not None
         and (CASH_REPORTING_THRESHOLD - STRUCTURING_WINDOW)
@@ -234,11 +262,11 @@ def format_case_summary(
     as_of: str,
 ) -> str:
     """Render a structured plain-text case summary from loaded case data."""
-    party        = case_data["party"]
-    accounts     = case_data["accounts"]
+    party = case_data["party"]
+    accounts = case_data["accounts"]
     transactions = case_data["transactions"]
-    alerts       = case_data["alerts"]
-    dq_warnings  = case_data["dq_warnings"]
+    alerts = case_data["alerts"]
+    dq_warnings = case_data["dq_warnings"]
 
     sections = [
         _render_header(party_id, from_date, to_date, env, as_of),

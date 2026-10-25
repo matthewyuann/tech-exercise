@@ -28,8 +28,12 @@ logger = logging.getLogger("main")
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="AML Case Summary Script")
     parser.add_argument("--party-id", required=True, help="Party ID to investigate")
-    parser.add_argument("--from-date", default=None, help="Filter transactions from date (YYYY-MM-DD)")
-    parser.add_argument("--to-date", default=None, help="Filter transactions to date (YYYY-MM-DD)")
+    parser.add_argument(
+        "--from-date", default=None, help="Filter transactions from date (YYYY-MM-DD)"
+    )
+    parser.add_argument(
+        "--to-date", default=None, help="Filter transactions to date (YYYY-MM-DD)"
+    )
     return parser.parse_args()
 
 
@@ -51,7 +55,9 @@ def main() -> None:
 
     # Abstain path — unknown party
     if data["party"] is None:
-        print(f"UNABLE TO ASSESS — party '{args.party_id}' not found in {env} database.")
+        print(
+            f"UNABLE TO ASSESS — party '{args.party_id}' not found in {env} database."
+        )
         sys.exit(2)
 
     # Abstain path — no usable data
